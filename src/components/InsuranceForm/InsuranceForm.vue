@@ -1,16 +1,16 @@
 <template>
     <div class="InsuranceForm">
-        <v-stepper v-model="e1">
+        <v-stepper v-model="step">
             <v-stepper-header>
-                <v-stepper-step :complete="e1 > 1" step="1">Name of step 1</v-stepper-step>
+                <v-stepper-step :complete="step > 1" step="1">Автомобиль</v-stepper-step>
 
                 <v-divider></v-divider>
 
-                <v-stepper-step :complete="e1 > 2" step="2">Name of step 2</v-stepper-step>
+                <v-stepper-step :complete="step > 2" step="2">Владелец</v-stepper-step>
 
                 <v-divider></v-divider>
 
-                <v-stepper-step step="3">Name of step 3</v-stepper-step>
+                <v-stepper-step step="3">Параметры КАСКО</v-stepper-step>
             </v-stepper-header>
 
             <v-stepper-items>
@@ -19,16 +19,23 @@
                             class="mb-5"
                             color="grey lighten-1"
                             height="200px"
-                    ></v-card>
+                    >
+                        <v-autocomplete
+                                v-model="model"
+                                :items="brands"
+                                :label="`Производитель`"
+                                persistent-hint
+                                prepend-icon="mdi-city"
+                        >
+                        </v-autocomplete>
+                    </v-card>
 
                     <v-btn
                             color="primary"
-                            @click="e1 = 2"
+                            @click="step++"
                     >
-                        Continue
+                        Next
                     </v-btn>
-
-                    <v-btn flat>Cancel</v-btn>
                 </v-stepper-content>
 
                 <v-stepper-content step="2">
@@ -40,12 +47,14 @@
 
                     <v-btn
                             color="primary"
-                            @click="e1 = 3"
+                            @click="step++"
                     >
-                        Continue
+                        Next
                     </v-btn>
 
-                    <v-btn flat>Cancel</v-btn>
+                    <v-btn flat
+                           @click="step--"
+                    >Back</v-btn>
                 </v-stepper-content>
 
                 <v-stepper-content step="3">
@@ -57,12 +66,13 @@
 
                     <v-btn
                             color="primary"
-                            @click="e1 = 1"
                     >
-                        Continue
+                        Done
                     </v-btn>
 
-                    <v-btn flat>Cancel</v-btn>
+                    <v-btn flat
+                           @click="step--"
+                    >Back</v-btn>
                 </v-stepper-content>
             </v-stepper-items>
         </v-stepper>
@@ -71,7 +81,27 @@
 
 <script>
     export default {
-        props: {
-        },
-    };
+        data () {
+            return {
+                step: 0,
+                brands: [
+                    "Audi",
+                    "BMW",
+                    "Ford",
+                    "Honda",
+                    "Hyundai",
+                    "Kia",
+                    "Lada (ВАЗ)",
+                    "Mazda",
+                    "Mercedes-Benz",
+                    "Mitsubishi",
+                    "Nissan",
+                    "Renault",
+                    "Skoda",
+                    "Toyota",
+                    "Volkswagen",
+                ],
+            }
+        }
+    }
 </script>
