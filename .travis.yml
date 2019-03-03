@@ -3,7 +3,7 @@ node_js:
 - '8'
 script:
 - npm install
-- bash deploy.sh
+- npm run build
 install:
 - npm install -g firebase-tools
 deploy:
