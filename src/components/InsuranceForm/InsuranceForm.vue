@@ -21,11 +21,18 @@
                             height="200px"
                     >
                         <v-autocomplete
-                                v-model="model"
+                                v-model="modelAutoBrand"
                                 :items="brands"
                                 :label="`Производитель`"
                                 persistent-hint
-                                prepend-icon="mdi-city"
+                        >
+                        </v-autocomplete>
+                        <v-autocomplete
+                                v-if="showAutoModel"
+                                v-model="modelAutoModel"
+                                :items="models"
+                                :label="`Модель`"
+                                persistent-hint
                         >
                         </v-autocomplete>
                     </v-card>
@@ -84,16 +91,39 @@
 <script>
     import {db} from '../../main'
 
-    let brands = [];
+    let brands = [], models = [];
 
     console.log("started..");
 
     export default {
         data() {
             return {
-                model: null,
+                modelAutoBrand: null,
+                modelAutoModel: null,
                 step: 0,
                 brands: brands,
+                models: models,
+            }
+        },
+        watch: {
+            modelAutoBrand(val, _){
+                console.log("brand: " + val);
+                if(val != null) {
+                    db.collection("autos").where("brand", "==", val).get().then
+                    (querySnapshot => {
+                        if(querySnapshot.docs.length > 0) {
+                            models.splice(0, models.length);
+                            models.push(
+                                ...querySnapshot.docs[0].data().models
+                            );
+                        }
+                    })
+                }
+            },
+        },
+        computed: {
+            showAutoModel() {
+                return this.modelAutoBrand != null;
             }
         },
         created() {
