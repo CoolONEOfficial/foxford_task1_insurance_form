@@ -22,7 +22,7 @@
                     >
                         <v-autocomplete
                                 v-model="model"
-                                :items="brands"
+                                :items="autos"
                                 :label="`Производитель`"
                                 persistent-hint
                                 prepend-icon="mdi-city"
@@ -54,7 +54,8 @@
 
                     <v-btn flat
                            @click="step--"
-                    >Back</v-btn>
+                    >Back
+                    </v-btn>
                 </v-stepper-content>
 
                 <v-stepper-content step="3">
@@ -72,7 +73,8 @@
 
                     <v-btn flat
                            @click="step--"
-                    >Back</v-btn>
+                    >Back
+                    </v-btn>
                 </v-stepper-content>
             </v-stepper-items>
         </v-stepper>
@@ -80,9 +82,14 @@
 </template>
 
 <script>
+    import { db } from '../../main'
+
+    let autos = [];
+
     export default {
-        data () {
+        data() {
             return {
+                model: null,
                 step: 0,
                 brands: [
                     "Audi",
@@ -101,7 +108,13 @@
                     "Toyota",
                     "Volkswagen",
                 ],
+                autos: [],
             }
+        },
+        firestore () {
+            db.collection("autos").get().then(
+                value => autos.push(value)
+            )
         }
     }
 </script>
