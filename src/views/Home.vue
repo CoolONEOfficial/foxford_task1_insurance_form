@@ -1,13 +1,18 @@
 <template>
-  <InsuranceForm />
+  <div class="home">
+    <img alt="Vue logo" src="../assets/logo.png">
+    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  </div>
 </template>
 
 <script>
-  import InsuranceForm from '../components/InsuranceForm/InsuranceForm'
+  // @ is an alias to /src
+  import HelloWorld from '@/components/HelloWorld.vue'
 
   export default {
+    name: 'home',
     components: {
-      InsuranceForm
+      HelloWorld
     }
   }
 </script>
