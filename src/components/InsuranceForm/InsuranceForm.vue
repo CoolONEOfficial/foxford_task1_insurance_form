@@ -16,8 +16,8 @@
             <v-stepper-items>
                 <v-stepper-content step="1">
                     <v-card
-                            class="mb-5"
-                            color="grey lighten-1"
+                            class="mb-5 pa-3"
+                            color="grey lighten-3"
                             height="200px"
                     >
                         <v-autocomplete
@@ -40,6 +40,7 @@
                     <v-btn
                             color="primary"
                             @click="step++"
+                            :disabled="!firstStepCompleted"
                     >
                         Next
                     </v-btn>
@@ -47,14 +48,25 @@
 
                 <v-stepper-content step="2">
                     <v-card
-                            class="mb-5"
-                            color="grey lighten-1"
+                            class="mb-5 pa-3"
+                            color="grey lighten-3"
                             height="200px"
-                    ></v-card>
+                    >
+                        <v-subheader>Стаж вождения</v-subheader>
+                        <v-slider
+                                v-model="drivingExp"
+                                :tick-labels="Array('<1', '1', '2', '3', '4', '>5')"
+                                :max="5"
+                                step="1"
+                                ticks="always"
+                                tick-size="2"
+                        ></v-slider>
+                    </v-card>
 
                     <v-btn
                             color="primary"
                             @click="step++"
+                            :disabled="!secondStepCompleted"
                     >
                         Next
                     </v-btn>
@@ -67,13 +79,14 @@
 
                 <v-stepper-content step="3">
                     <v-card
-                            class="mb-5"
-                            color="grey lighten-1"
+                            class="mb-5 pa-3"
+                            color="grey lighten-3"
                             height="200px"
                     ></v-card>
 
                     <v-btn
                             color="primary"
+                            :disabled="!thirdStepCompleted"
                     >
                         Done
                     </v-btn>
@@ -100,6 +113,7 @@
             return {
                 modelAutoBrand: null,
                 modelAutoModel: null,
+                drivingExp: null,
                 step: 0,
                 brands: brands,
                 models: models,
@@ -124,7 +138,16 @@
         computed: {
             showAutoModel() {
                 return this.modelAutoBrand != null;
-            }
+            },
+            firstStepCompleted() {
+                return this.modelAutoBrand != null && this.modelAutoModel != null;
+            },
+            secondStepCompleted() {
+                return this.drivingExp != null;
+            },
+            thirdStepCompleted() {
+                return true;
+            },
         },
         created() {
             db.collection("autos").get().then
