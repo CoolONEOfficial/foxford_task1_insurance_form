@@ -8,8 +8,12 @@ import 'firebase/firestore'
 
 Vue.use(VueFire)
 firebase.initializeApp({
-  projectId: 'insurance-form',
-  databaseURL: 'insurance-form'
+  apiKey: "AIzaSyDKAXAIxwu9T-bdjxDuBS0D3SkElKD5dEg",
+  authDomain: "insurance-form.firebaseapp.com",
+  databaseURL: "https://insurance-form.firebaseio.com",
+  projectId: "insurance-form",
+  storageBucket: "insurance-form.appspot.com",
+  messagingSenderId: "1056576657852"
 })
 export const db = firebase.firestore()
 
