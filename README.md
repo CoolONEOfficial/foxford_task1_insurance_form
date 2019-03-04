@@ -1,5 +1,9 @@
 # insurance_form
 
+[![Build Status](https://travis-ci.org/CoolONEOfficial/foxford_task2_insurance_form.svg?branch=master)](https://travis-ci.org/CoolONEOfficial/foxford_task2_insurance_form)
+
+[Firebase hosting link](https://insurance-form.firebaseapp.com/)
+
 ## Project setup
 ```
 npm install
