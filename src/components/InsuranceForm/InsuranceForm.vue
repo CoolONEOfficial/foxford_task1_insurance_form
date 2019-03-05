@@ -18,8 +18,9 @@
                     <v-card
                             class="mb-5 pa-3"
                             color="grey lighten-3"
-                            height="200px"
+                            min-height="200px"
                     >
+                        <v-img :src="brandImage" alt=""></v-img>
                         <v-autocomplete
                                 v-model="modelAutoBrand"
                                 :items="brands"
@@ -50,13 +51,27 @@
                     <v-card
                             class="mb-5 pa-3"
                             color="grey lighten-3"
-                            height="200px"
+                            min-height="200px"
                     >
-                        <v-subheader>Стаж вождения</v-subheader>
+                        <v-subheader>Количество водителей</v-subheader>
+                        <v-slider
+                                v-model="driversCount"
+                                :tick-labels="Array('1', '2', '3', '4', '>5')"
+                                :max="4"
+                                step="1"
+                                ticks="always"
+                                tick-size="2"
+                        ></v-slider>
+                        <v-subheader>{{
+                            driversCount > 0
+                            ? "Минимальный стаж вождения водителей"
+                            : "Стаж вождения водителя"
+                            }}
+                        </v-subheader>
                         <v-slider
                                 v-model="drivingExp"
-                                :tick-labels="Array('<1', '1', '2', '3', '4', '>5')"
-                                :max="5"
+                                :tick-labels="Array('<0.5', '0.5', '1', '2', '3', '4', '>5')"
+                                :max="6"
                                 step="1"
                                 ticks="always"
                                 tick-size="2"
@@ -81,7 +96,7 @@
                     <v-card
                             class="mb-5 pa-3"
                             color="grey lighten-3"
-                            height="200px"
+                            min-height="200px"
                     ></v-card>
 
                     <v-btn
@@ -93,7 +108,8 @@
 
                     <v-btn flat
                            @click="step--"
-                    >Back
+                    >
+                        Back
                     </v-btn>
                 </v-stepper-content>
             </v-stepper-items>
@@ -102,7 +118,7 @@
 </template>
 
 <script>
-    import {db} from '../../main'
+    import {db, sg} from '../../main'
 
     let brands = [], models = [];
 
@@ -113,23 +129,26 @@
             return {
                 modelAutoBrand: null,
                 modelAutoModel: null,
+                driversCount: null,
                 drivingExp: null,
+                brandImage: null,
                 step: 0,
                 brands: brands,
                 models: models,
             }
         },
         watch: {
-            modelAutoBrand(val, _){
+            modelAutoBrand(val, _) {
                 console.log("brand: " + val);
-                if(val != null) {
+                if (val != null) {
                     db.collection("autos").where("brand", "==", val).get().then
                     (querySnapshot => {
-                        if(querySnapshot.docs.length > 0) {
+                        if (querySnapshot.docs.length > 0) {
                             models.splice(0, models.length);
                             models.push(
                                 ...querySnapshot.docs[0].data().models
                             );
+                            //brandImage = sg.ref("brands/" + );
                         }
                     })
                 }
