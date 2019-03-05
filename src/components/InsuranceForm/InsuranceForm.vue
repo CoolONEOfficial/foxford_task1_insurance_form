@@ -1,119 +1,169 @@
 <template>
     <div class="InsuranceForm">
-        <v-stepper v-model="step">
-            <v-stepper-header>
-                <v-stepper-step :complete="step > 1" step="1">Автомобиль</v-stepper-step>
+        <v-container
+                align-center justify-center fill-height>
+            <v-flex xs12 md8 lg6>
+                <v-stepper v-model="step">
+                    <v-stepper-header>
+                        <v-stepper-step :complete="step > 1" step="1">Автомобиль</v-stepper-step>
 
-                <v-divider></v-divider>
+                        <v-divider></v-divider>
 
-                <v-stepper-step :complete="step > 2" step="2">Владелец</v-stepper-step>
+                        <v-stepper-step :complete="step > 2" step="2">Владелец</v-stepper-step>
 
-                <v-divider></v-divider>
+                        <v-divider></v-divider>
 
-                <v-stepper-step step="3">Параметры КАСКО</v-stepper-step>
-            </v-stepper-header>
+                        <v-stepper-step step="3">Параметры страховки</v-stepper-step>
+                    </v-stepper-header>
 
-            <v-stepper-items>
-                <v-stepper-content step="1">
-                    <v-card
-                            class="mb-5 pa-3"
-                            color="grey lighten-3"
-                            min-height="200px"
-                    >
-                        <v-img :src="brandImage" alt=""></v-img>
-                        <v-autocomplete
-                                v-model="modelAutoBrand"
-                                :items="brands"
-                                :label="`Производитель`"
-                                persistent-hint
-                        >
-                        </v-autocomplete>
-                        <v-autocomplete
-                                v-if="showAutoModel"
-                                v-model="modelAutoModel"
-                                :items="models"
-                                :label="`Модель`"
-                                persistent-hint
-                        >
-                        </v-autocomplete>
-                    </v-card>
+                    <v-stepper-items>
+                        <v-stepper-content step="1">
+                            <v-card
+                                    class="mb-5 pa-3"
+                                    color="grey lighten-3"
+                                    min-height="200px"
+                            >
+                                <v-img :src="brandImage" alt=""></v-img>
+                                <v-layout row wrap justify-space-between>
+                                    <v-flex xs12 md6 grow pa-1>
+                                        <v-autocomplete
+                                                v-model="modelAutoBrand"
+                                                :items="brands"
+                                                label="Производитель"
+                                                persistent-hint
+                                        >
+                                        </v-autocomplete>
+                                    </v-flex>
+                                    <v-flex xs12 md6 grow pa-1>
+                                        <v-autocomplete
+                                                v-if="showAutoModel"
+                                                v-model="modelAutoModel"
+                                                :items="models"
+                                                label="Модель"
+                                                persistent-hint
+                                        >
+                                        </v-autocomplete>
+                                    </v-flex>
 
-                    <v-btn
-                            color="primary"
-                            @click="step++"
-                            :disabled="!firstStepCompleted"
-                    >
-                        Next
-                    </v-btn>
-                </v-stepper-content>
+                                </v-layout>
 
-                <v-stepper-content step="2">
-                    <v-card
-                            class="mb-5 pa-3"
-                            color="grey lighten-3"
-                            min-height="200px"
-                    >
-                        <v-subheader>Количество водителей</v-subheader>
-                        <v-slider
-                                v-model="driversCount"
-                                :tick-labels="Array('1', '2', '3', '4', '>5')"
-                                :max="4"
-                                step="1"
-                                ticks="always"
-                                tick-size="2"
-                        ></v-slider>
-                        <v-subheader>{{
-                            driversCount > 0
-                            ? "Минимальный стаж вождения водителей"
-                            : "Стаж вождения водителя"
-                            }}
-                        </v-subheader>
-                        <v-slider
-                                v-model="drivingExp"
-                                :tick-labels="Array('<0.5', '0.5', '1', '2', '3', '4', '>5')"
-                                :max="6"
-                                step="1"
-                                ticks="always"
-                                tick-size="2"
-                        ></v-slider>
-                    </v-card>
+                                <v-slider
+                                        label="Пробег"
+                                        v-model="modelMileage"
+                                        :tick-labels="Array(
+                                            '<0.5', '0.5', '1', '2', '3', '4', '>5'
+                                        )"
+                                        :max="6"
+                                        step="1"
+                                        ticks="always"
+                                        tick-size="2"
+                                ></v-slider>
+                            </v-card>
 
-                    <v-btn
-                            color="primary"
-                            @click="step++"
-                            :disabled="!secondStepCompleted"
-                    >
-                        Next
-                    </v-btn>
+                            <v-btn
+                                    color="primary"
+                                    @click="step++"
+                                    :disabled="!firstStepCompleted"
+                            >
+                                Next
+                            </v-btn>
+                        </v-stepper-content>
 
-                    <v-btn flat
-                           @click="step--"
-                    >Back
-                    </v-btn>
-                </v-stepper-content>
+                        <v-stepper-content step="2">
+                            <v-card
+                                    class="mb-5 pa-3"
+                                    color="grey lighten-3"
+                                    min-height="200px"
+                            >
+                                <v-slider
+                                        label="Количество водителей"
+                                        v-model="modelDriversCount"
+                                        :tick-labels="Array('1', '2', '3', '4', '>5')"
+                                        :max="4"
+                                        step="1"
+                                        ticks="always"
+                                        tick-size="2"
+                                ></v-slider>
+                                <v-slider
+                                        :label="modelDriversCount > 0
+                                    ? 'Мин. стаж водителей'
+                                    : 'Стаж водителя'"
+                                        v-model="modelDrivingExp"
+                                        :tick-labels="Array('<0.5', '0.5', '1', '2', '3', '4', '>5')"
+                                        :max="6"
+                                        step="1"
+                                        ticks="always"
+                                        tick-size="2"
+                                ></v-slider>
+                                <v-slider
+                                        :label="modelDriversCount > 0
+                                    ? 'Мин. возраст водителей'
+                                    : 'Возраст водителя'"
+                                        v-model="modelAge"
+                                        :tick-labels="Array('18-22', '23-30', '31-40', '41-50', '50-99')"
+                                        :max="4"
+                                        step="1"
+                                        ticks="always"
+                                        tick-size="2"
+                                ></v-slider>
+                            </v-card>
 
-                <v-stepper-content step="3">
-                    <v-card
-                            class="mb-5 pa-3"
-                            color="grey lighten-3"
-                            min-height="200px"
-                    ></v-card>
+                            <v-btn
+                                    color="primary"
+                                    @click="step++"
+                                    :disabled="!secondStepCompleted"
+                            >
+                                Next
+                            </v-btn>
 
-                    <v-btn
-                            color="primary"
-                            :disabled="!thirdStepCompleted"
-                    >
-                        Done
-                    </v-btn>
+                            <v-btn flat
+                                   @click="step--"
+                            >Back
+                            </v-btn>
+                        </v-stepper-content>
 
-                    <v-btn flat
-                           @click="step--"
-                    >
-                        Back
-                    </v-btn>
-                </v-stepper-content>
-            </v-stepper-items>
-        </v-stepper>
+                        <v-stepper-content step="3">
+                            <v-card
+                                    class="mb-5 pa-3"
+                                    color="grey lighten-3"
+                                    min-height="200px"
+                            >
+                                <v-slider
+                                        label="Франшиза"
+                                        v-model="modelFranchise"
+                                        :tick-labels="Array('5к', '10к', '20к', '30к', '40к', '50к')"
+                                        :max="5"
+                                        step="1"
+                                        ticks="always"
+                                        tick-size="2"
+                                ></v-slider>
+                                <v-select
+                                        :items="Array(
+                                            'по направлению страховщика',
+                                            'официальный дилер',
+                                            'неважно'
+                                        )"
+                                        label="Направление на ремонт"
+                                ></v-select>
+                            </v-card>
+
+                            <v-btn
+                                    color="primary"
+                                    :disabled="!thirdStepCompleted"
+                            >
+                                Done
+                            </v-btn>
+
+                            <v-btn flat
+                                   @click="step--"
+                            >
+                                Back
+                            </v-btn>
+                        </v-stepper-content>
+                    </v-stepper-items>
+                </v-stepper>
+            </v-flex>
+        </v-container>
     </div>
 </template>
 
@@ -129,8 +179,11 @@
             return {
                 modelAutoBrand: null,
                 modelAutoModel: null,
-                driversCount: null,
-                drivingExp: null,
+                modelDrivingExp: null,
+                modelAge: null,
+                modelMileage: null,
+                modelDriversCount: null,
+                modelFranchise: null,
                 brandImage: null,
                 step: 0,
                 brands: brands,
@@ -159,10 +212,12 @@
                 return this.modelAutoBrand != null;
             },
             firstStepCompleted() {
-                return this.modelAutoBrand != null && this.modelAutoModel != null;
+                return this.modelAutoBrand != null
+                    && this.modelAutoModel != null
+                    && this.modelMileage != null;
             },
             secondStepCompleted() {
-                return this.drivingExp != null;
+                return this.modelDrivingExp != null;
             },
             thirdStepCompleted() {
                 return true;
