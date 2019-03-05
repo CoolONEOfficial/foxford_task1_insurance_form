@@ -5,11 +5,11 @@
             <v-flex xs12 md8 lg6>
                 <v-stepper v-model="step">
                     <v-stepper-header>
-                        <v-stepper-step :complete="step > 1" step="1">Автомобиль</v-stepper-step>
+                        <v-stepper-step :complete="step > 1 || completed" step="1">Автомобиль</v-stepper-step>
 
                         <v-divider></v-divider>
 
-                        <v-stepper-step :complete="step > 2" step="2">Владелец</v-stepper-step>
+                        <v-stepper-step :complete="step > 2 || completed" step="2">Владелец</v-stepper-step>
 
                         <v-divider></v-divider>
 
