@@ -13,7 +13,7 @@
 
                         <v-divider></v-divider>
 
-                        <v-stepper-step step="3">Параметры страховки</v-stepper-step>
+                        <v-stepper-step step="3" :complete="completed">Параметры страховки</v-stepper-step>
                     </v-stepper-header>
 
                     <v-stepper-items>
@@ -144,12 +144,14 @@
                                             'неважно'
                                         )"
                                         label="Направление на ремонт"
+                                        @change="modelInsuranceChange"
                                 ></v-select>
                             </v-card>
 
                             <v-btn
                                     color="primary"
                                     :disabled="!thirdStepCompleted"
+                                    @click="completed = true"
                             >
                                 Done
                             </v-btn>
@@ -177,6 +179,7 @@
     export default {
         data() {
             return {
+                completed: false,
                 modelAutoBrand: null,
                 modelAutoModel: null,
                 modelDrivingExp: null,
@@ -184,10 +187,16 @@
                 modelMileage: null,
                 modelDriversCount: null,
                 modelFranchise: null,
+                modelInsurance: null,
                 brandImage: null,
                 step: 0,
                 brands: brands,
                 models: models,
+            }
+        },
+        methods: {
+            modelInsuranceChange: function (val) {
+                this.modelInsurance = val;
             }
         },
         watch: {
@@ -217,10 +226,13 @@
                     && this.modelMileage != null;
             },
             secondStepCompleted() {
-                return this.modelDrivingExp != null;
+                return this.modelDrivingExp != null
+                    && this.modelDriversCount != null
+                    && this.modelAge;
             },
             thirdStepCompleted() {
-                return true;
+                return this.modelFranchise != null
+                    && this.modelInsurance != null;
             },
         },
         created() {
