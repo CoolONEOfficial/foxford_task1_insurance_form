@@ -5,15 +5,30 @@
             <v-flex xs12 md8 lg6>
                 <v-stepper v-model="step" :vertical="$vuetify.breakpoint.smAndDown">
                     <v-stepper-header class="hidden-sm-and-down">
-                        <v-stepper-step :complete="step > 1 || completed" step="1">Автомобиль</v-stepper-step>
+                        <v-stepper-step
+                                @click="step = 1"
+                                :complete="step > 1 || completed"
+                                step="1">
+                            Автомобиль
+                        </v-stepper-step>
 
                         <v-divider></v-divider>
 
-                        <v-stepper-step :complete="step > 2 || completed" step="2">Владелец</v-stepper-step>
+                        <v-stepper-step
+                                @click="step = 2"
+                                :complete="step > 2 || completed"
+                                step="2">
+                            Владелец
+                        </v-stepper-step>
 
                         <v-divider></v-divider>
 
-                        <v-stepper-step step="3" :complete="completed">Параметры страховки</v-stepper-step>
+                        <v-stepper-step
+                                @click="step = 3"
+                                step="3"
+                                :complete="completed">
+                            Параметры страховки
+                        </v-stepper-step>
                     </v-stepper-header>
 
                     <v-stepper-items>
@@ -22,13 +37,33 @@
 
                         <v-stepper-content step="1">
                             <v-layout row wrap justify-space-between>
-                                <v-flex xs12 md6 grow pa-1>
+                                <v-flex xs1 md1 grow pa-1>
+                                    <v-img :src="autoBrandImage != null ? autoBrandImage : ''"></v-img>
+                                </v-flex>
+                                <v-flex xs11 md5 grow pa-1>
                                     <v-autocomplete
                                             v-model="modelAutoBrand"
                                             :items="brands"
                                             label="Производитель"
                                             persistent-hint
+                                            return-object
                                     >
+                                        <template slot="selection" slot-scope="data">
+
+                                            <v-img class="ma-1" contain max-height="24px" max-width="40px" :src="data.item.image"></v-img>
+
+                                            <div> {{ data.item.text }}
+                                            </div>
+                                        </template>
+                                        <template slot="item" slot-scope="data">
+                                            <v-list-tile-avatar>
+                                                <v-img class="ma-1" contain max-height="24px" max-width="40px" :src="data.item.image"></v-img>
+                                            </v-list-tile-avatar>
+                                            <v-list-tile-content>
+                                                <v-list-tile-title> {{ data.item.text }}
+                                                </v-list-tile-title>
+                                            </v-list-tile-content>
+                                        </template>
                                     </v-autocomplete>
                                 </v-flex>
                                 <v-flex xs12 md6 grow pa-1>
@@ -54,7 +89,7 @@
                                                 : modelMileage === 2 ? 'год'
                                                 : 'года'
                                         "
-                                    inverse-label="true"
+                                    inverse-label
                                     v-model="modelMileage"
                                     :tick-labels="Array(
                                             '<0.5', '0.5', '1', '2', '3', '4', '>5'
@@ -102,7 +137,7 @@
                                                 : modelDrivingExp === 2 ? 'год'
                                                 : 'года'
                                         "
-                                    inverse-label="true"
+                                    inverse-label
                                     v-model="modelDrivingExp"
                                     :tick-labels="Array('<0.5', '0.5', '1', '2', '3', '4', '>5')"
                                     :max="6"
@@ -124,7 +159,7 @@
                                                 ? 'года'
                                                 : 'лет'
                                         "
-                                    inverse-label="true"
+                                    inverse-label
                                     v-model="modelAge"
                                     :tick-labels="Array('18-22', '23-30', '31-40', '41-50', '50+')"
                                     :max="4"
@@ -156,7 +191,7 @@
                             </v-subheader>
                             <v-slider
                                     label="т. р."
-                                    inverse-label="true"
+                                    inverse-label
                                     v-model="modelFranchise"
                                     :tick-labels="Array('5', '10', '20', '30', '40', '50')"
                                     :max="5"
@@ -227,6 +262,7 @@
 
 <script>
     import {db, sg} from '../main'
+    import Vue from 'vue'
 
     let brands = [], models = [];
 
@@ -244,6 +280,7 @@
                 modelDriversCount: null,
                 modelFranchise: null,
                 modelInsurance: null,
+                autoBrandImage: null,
                 step: 0,
                 brands: brands,
                 models: models,
@@ -255,8 +292,8 @@
             }
         },
         watch: {
-            modelAutoBrand(val, _) {
-                console.log("brand: " + val);
+            modelAutoBrand(val) {
+                console.log("brand", val);
                 if (val != null) {
                     db.collection("autos").where("brand", "==", val).get().then
                     (querySnapshot => {
@@ -294,7 +331,24 @@
             (querySnapshot => {
                 console.log(querySnapshot.docs);
                 brands.push(...querySnapshot.docs.map(
-                    value => value.data().brand
+                    function (value, index) {
+                        let data = value.data();
+                        sg.ref('brands').child(data.brand.toLowerCase() + '.png').getDownloadURL()
+                            .then(
+                                function (src) {
+                                    const old = brands[index];
+                                    Vue.set(brands, index, {
+                                        text: old.text,
+                                        image: src,
+                                    });
+                                }
+                            );
+                        console.log(data);
+                        return {
+                            text: data.brand,
+                            image: "",
+                        };
+                    }
                 ));
             })
         },
