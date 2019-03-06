@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import InsuranceForm from './components/InsuranceForm/InsuranceForm'
+import InsuranceForm from './components/InsuranceForm'
 
 export default {
   name: 'App',

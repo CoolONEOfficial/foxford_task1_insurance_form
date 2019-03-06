@@ -48,7 +48,6 @@
                                 Пробег
                             </v-subheader>
                             <v-slider
-                                    class="px-3"
                                     :label="
                                             modelMileage == null ? '' :
                                             modelMileage === 6 ? 'лет'
@@ -70,7 +69,7 @@
                                     @click="step++"
                                     :disabled="!firstStepCompleted"
                             >
-                                Next
+                                Следующий
                             </v-btn>
                         </v-stepper-content>
 
@@ -82,7 +81,6 @@
                                 Количество водителей
                             </v-subheader>
                             <v-slider
-                                    class="px-3"
                                     v-model="modelDriversCount"
                                     :tick-labels="Array('1', '2', '3', '4', '>5')"
                                     :max="4"
@@ -98,7 +96,6 @@
                                 }}
                             </v-subheader>
                             <v-slider
-                                    class="px-3"
                                     :label="
                                             modelDrivingExp == null ? '' :
                                             modelDrivingExp === 6 ? 'лет'
@@ -121,7 +118,6 @@
                                 }}
                             </v-subheader>
                             <v-slider
-                                    class="px-3"
                                     :label="
                                             modelAge == null ? '' :
                                             modelAge === 0
@@ -141,12 +137,13 @@
                                     @click="step++"
                                     :disabled="!secondStepCompleted"
                             >
-                                Next
+                                Следующий
                             </v-btn>
 
                             <v-btn flat
                                    @click="step--"
-                            >Back
+                            >
+                                Назад
                             </v-btn>
                         </v-stepper-content>
 
@@ -158,7 +155,6 @@
                                 Франшиза
                             </v-subheader>
                             <v-slider
-                                    class="px-3"
                                     label="т. р."
                                     inverse-label="true"
                                     v-model="modelFranchise"
@@ -183,13 +179,13 @@
                                     :disabled="!thirdStepCompleted"
                                     @click="completed = true"
                             >
-                                Done
+                                Готово
                             </v-btn>
 
                             <v-btn flat
                                    @click="step--"
                             >
-                                Back
+                                Назад
                             </v-btn>
                         </v-stepper-content>
                     </v-stepper-items>
@@ -199,8 +195,38 @@
     </div>
 </template>
 
+<style lang="scss">
+    @import url('https://fonts.googleapis.com/css?family=Roboto+Condensed');
+
+    html, body {
+        font-family: 'Roboto Condensed', sans-serif;
+    }
+
+    body {
+        font-family: 'Roboto Condensed', sans-serif;
+    }
+
+    #app {
+        font-family: 'Roboto Condensed', sans-serif;
+    }
+
+    .v-subheader {
+        height: 40px;
+    }
+
+    .v-input--slider {
+        margin-left: 12pt;
+        margin-right: 12pt;
+        margin-top: 0 !important;
+    }
+
+    .v-select .v-autocomplete {
+        margin-bottom: -10px;
+    }
+</style>
+
 <script>
-    import {db, sg} from '../../main'
+    import {db, sg} from '../main'
 
     let brands = [], models = [];
 
