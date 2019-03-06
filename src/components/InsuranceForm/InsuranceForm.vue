@@ -3,8 +3,8 @@
         <v-container
                 align-center justify-center fill-height>
             <v-flex xs12 md8 lg6>
-                <v-stepper v-model="step">
-                    <v-stepper-header>
+                <v-stepper v-model="step" :vertical="$vuetify.breakpoint.smAndDown">
+                    <v-stepper-header class="hidden-sm-and-down">
                         <v-stepper-step :complete="step > 1 || completed" step="1">Автомобиль</v-stepper-step>
 
                         <v-divider></v-divider>
@@ -17,13 +17,14 @@
                     </v-stepper-header>
 
                     <v-stepper-items>
+                        <v-stepper-step :complete="step > 1 || completed" step="1" class="hidden-md-and-up">Автомобиль</v-stepper-step>
+
                         <v-stepper-content step="1">
                             <v-card
                                     class="mb-5 pa-3"
                                     color="grey lighten-3"
                                     min-height="200px"
                             >
-                                <v-img :src="brandImage" alt=""></v-img>
                                 <v-layout row wrap justify-space-between>
                                     <v-flex xs12 md6 grow pa-1>
                                         <v-autocomplete
@@ -68,6 +69,8 @@
                                 Next
                             </v-btn>
                         </v-stepper-content>
+
+                        <v-stepper-step :complete="step > 2 || completed" step="2" class="hidden-md-and-up">Владелец</v-stepper-step>
 
                         <v-stepper-content step="2">
                             <v-card
@@ -121,6 +124,8 @@
                             >Back
                             </v-btn>
                         </v-stepper-content>
+
+                        <v-stepper-step step="3" :complete="completed" class="hidden-md-and-up">Параметры страховки</v-stepper-step>
 
                         <v-stepper-content step="3">
                             <v-card
@@ -188,7 +193,6 @@
                 modelDriversCount: null,
                 modelFranchise: null,
                 modelInsurance: null,
-                brandImage: null,
                 step: 0,
                 brands: brands,
                 models: models,
@@ -210,7 +214,6 @@
                             models.push(
                                 ...querySnapshot.docs[0].data().models
                             );
-                            //brandImage = sg.ref("brands/" + );
                         }
                     })
                 }
