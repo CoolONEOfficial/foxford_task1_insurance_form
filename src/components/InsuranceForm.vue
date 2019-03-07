@@ -46,14 +46,20 @@
                                     >
                                         <template slot="selection" slot-scope="data">
 
-                                            <v-img class="ma-1" contain max-height="24px" max-width="40px" :src="data.item.image"></v-img>
+                                            <v-img class="ma-1" contain max-height="24px" max-width="40px"
+                                                   :src="data.item.image"></v-img>
 
                                             <div> {{ data.item.text }}
                                             </div>
                                         </template>
                                         <template slot="item" slot-scope="data">
-                                            <v-list-tile-avatar>
-                                                <v-img class="ma-1" contain max-height="24px" max-width="40px" :src="data.item.image"></v-img>
+                                            <v-list-tile-avatar tile>
+                                                <v-img class="ma-1"
+                                                       contain
+                                                       max-height="24px"
+                                                       max-width="40px"
+                                                       :src="data.item.image">
+                                                </v-img>
                                             </v-list-tile-avatar>
                                             <v-list-tile-content>
                                                 <v-list-tile-title> {{ data.item.text }}
@@ -70,6 +76,30 @@
                                             label="Модель"
                                             persistent-hint
                                     >
+                                        <template slot="selection" slot-scope="data">
+
+                                            <v-img class="ma-1" contain
+                                                   max-height="24px"
+                                                   max-width="40px"
+                                                   :src="data.item.image">
+
+                                            </v-img>
+
+                                            <div> {{ data.item.text }}
+                                            </div>
+                                        </template>
+                                        <template slot="item" slot-scope="data">
+                                            <v-list-tile-avatar tile>
+                                                <v-img class="ma-1" contain max-height="24px"
+                                                       max-width="40px"
+                                                       :src="data.item.image">
+                                                </v-img>
+                                            </v-list-tile-avatar>
+                                            <v-list-tile-content>
+                                                <v-list-tile-title> {{ data.item.text }}
+                                                </v-list-tile-title>
+                                            </v-list-tile-content>
+                                        </template>
                                     </v-autocomplete>
                                 </v-flex>
 
@@ -297,7 +327,21 @@
                             console.log("models", querySnapshot.docs[0].data().models);
                             models.splice(0, models.length);
                             models.push(
-                                ...querySnapshot.docs[0].data().models
+                                ...querySnapshot.docs[0].data().models.map(
+                                    (value, index) => {
+                                        sg.ref("models").child(val.toLowerCase() + '_' + value.toLowerCase() + '.png')
+                                            .getDownloadURL().then(
+                                                src => Vue.set(models, index, {
+                                                    text: models[index].text,
+                                                    image: src,
+                                                })
+                                            );
+                                        return {
+                                            text: value,
+                                            image: "",
+                                        }
+                                    }
+                                )
                             );
                         }
                     })
@@ -332,13 +376,10 @@
                         let data = value.data();
                         sg.ref('brands').child(data.brand.toLowerCase() + '.png').getDownloadURL()
                             .then(
-                                function (src) {
-                                    const old = brands[index];
-                                    Vue.set(brands, index, {
-                                        text: old.text,
-                                        image: src,
-                                    });
-                                }
+                                src => Vue.set(brands, index, {
+                                    text: brands[index].text,
+                                    image: src,
+                                })
                             );
                         console.log(data);
                         return {
