@@ -7,7 +7,7 @@
                     <v-stepper-header class="hidden-sm-and-down">
                         <v-stepper-step
                                 @click="step = 1"
-                                :complete="step > 1 || completed"
+                                :complete="step > 1"
                                 step="1">
                             Автомобиль
                         </v-stepper-step>
@@ -15,8 +15,8 @@
                         <v-divider></v-divider>
 
                         <v-stepper-step
-                                @click="step = 2"
-                                :complete="step > 2 || completed"
+                                @click="step = firstStepCompleted ? 2 : step"
+                                :complete="step > 2"
                                 step="2">
                             Владелец
                         </v-stepper-step>
@@ -24,24 +24,20 @@
                         <v-divider></v-divider>
 
                         <v-stepper-step
-                                @click="step = 3"
+                                @click="step = secondStepCompleted ? 3 : step"
                                 step="3"
                                 :complete="step > 3">
                             Параметры страховки
                         </v-stepper-step>
-                        <!---->
-                        <!--<v-divider></v-divider>-->
-
-                        <!--<v-stepper-step-->
-                                <!--@click="step = 4"-->
-                                <!--step="4"-->
-                                <!--:complete="completed">-->
-                            <!--Подтверждение заказа-->
-                        <!--</v-stepper-step>-->
                     </v-stepper-header>
 
                     <v-stepper-items>
-                        <v-stepper-step :complete="step > 1 || completed" step="1" class="hidden-md-and-up">Автомобиль
+                        <v-stepper-step
+                                :complete="step > 1"
+                                step="1"
+                                class="hidden-md-and-up"
+                                @click="step = 1">
+                            Автомобиль
                         </v-stepper-step>
 
                         <v-stepper-content step="1">
@@ -52,10 +48,10 @@
                                             :items="brands"
                                             label="Производитель"
                                             persistent-hint
+                                            return-object
                                     >
                                         <template slot="selection" slot-scope="data">
-
-                                            <v-img class="ma-1" 
+                                            <v-img class="ma-1"
                                                    contain
                                                    max-height="24px"
                                                    max-width="40px"
@@ -83,20 +79,20 @@
                                 </v-flex>
                                 <v-flex xs12 md6 grow pa-1>
                                     <v-autocomplete
-                                            v-if="showAutoModel"
+                                            v-if="modelAutoBrand != null"
                                             v-model="modelAutoModel"
                                             :items="models"
                                             label="Модель"
                                             persistent-hint
+                                            return-object
                                     >
                                         <template slot="selection" slot-scope="data">
 
-                                            <v-img class="ma-1" 
+                                            <v-img class="ma-1"
                                                    contain
                                                    max-height="24px"
                                                    max-width="40px"
                                                    :src="data.item.image">
-
                                             </v-img>
 
                                             <div> {{ data.item.text }}
@@ -150,7 +146,12 @@
                             </v-btn>
                         </v-stepper-content>
 
-                        <v-stepper-step :complete="step > 2 || completed" step="2" class="hidden-md-and-up">Владелец
+                        <v-stepper-step
+                                :complete="step > 2"
+                                step="2"
+                                class="hidden-md-and-up"
+                                @click="step = firstStepCompleted ? 2 : step">
+                            Владелец
                         </v-stepper-step>
 
                         <v-stepper-content step="2">
@@ -224,7 +225,12 @@
                             </v-btn>
                         </v-stepper-content>
 
-                        <v-stepper-step step="3" :complete="completed" class="hidden-md-and-up">Параметры страховки
+                        <v-stepper-step
+                                step="3"
+                                :complete="step > 3"
+                                class="hidden-md-and-up"
+                                @click="step = secondStepCompleted ? 3 : step">
+                            Параметры страховки
                         </v-stepper-step>
 
                         <v-stepper-content step="3">
@@ -245,7 +251,7 @@
                                     :items="Array(
                                             'по направлению страховщика',
                                             'официальный дилер',
-                                            'неважно'
+                                            'не важно'
                                         )"
                                     label="Направление на ремонт"
                                     @change="modelInsuranceChange"
@@ -254,7 +260,7 @@
                             <v-btn
                                     color="primary"
                                     :disabled="!thirdStepCompleted"
-                                    @click="completed = true"
+                                    @click="step++"
                             >
                                 Готово
                             </v-btn>
@@ -264,6 +270,71 @@
                             >
                                 Назад
                             </v-btn>
+                        </v-stepper-content>
+
+                        <v-stepper-content step="4">
+                            <v-layout row wrap justify-space-between>
+                                <v-flex xs12 md4 pa-1>
+                                    <v-card>
+                                        <v-card-title class="justify-center text-xs-center" primary-title>
+                                            <h3 class="headline mb-0">Автомобиль</h3>
+                                        </v-card-title>
+
+                                        <v-layout row wrap align-center>
+                                            <v-flex xs5 md12 pa-1 class="justify-end">
+                                                <v-layout
+                                                          justify-center
+                                                          wrap
+                                                          align-center
+                                                          :column="$vuetify.breakpoint.smAndDown">
+
+                                                    <h3 class="headline mb-0">
+                                                        {{ modelAutoBrand != null ? modelAutoBrand.text : '' }}
+                                                    </h3>
+
+                                                    <v-img
+                                                            v-if="$vuetify.breakpoint.mdAndUp"
+                                                            contain
+                                                            max-height="24px"
+                                                            max-width="40px"
+                                                            aspect-ratio="1"
+                                                            :src="modelAutoBrand != null ? modelAutoBrand.image : ''"
+                                                            class="mx-2"
+                                                    >
+                                                    </v-img>
+
+                                                    <h3 class="headline mb-0">
+                                                        {{ modelAutoModel != null ? modelAutoModel.text : '' }}
+                                                    </h3>
+                                                </v-layout>
+                                            </v-flex>
+                                            <v-flex xs7 md12 pa-3>
+                                                <v-img contain
+                                                       max-height="150"
+                                                       aspect-ratio="1"
+                                                       :src="modelAutoModel != null ? modelAutoModel.image : ''"
+                                                >
+                                                </v-img>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-card>
+                                </v-flex>
+                                <v-flex xs12 md4 pa-1>
+                                    <v-card>
+                                        <v-card-title class="justify-center text-xs-center" primary-title>
+                                            <h3 class="headline mb-0">Владелец</h3>
+                                        </v-card-title>
+                                    </v-card>
+                                </v-flex>
+                                <v-flex xs12 md4 pa-1>
+                                    <v-card>
+                                        <v-card-title class="justify-center text-xs-center" primary-title>
+                                            <h3 class="headline mb-0">Параметры страховки</h3>
+                                        </v-card-title>
+                                    </v-card>
+                                </v-flex>
+                            </v-layout>
+                            <h3 class="display-2 font-weight-light text-xs-center mt-3">Как с Вами связаться?</h3>
                         </v-stepper-content>
                     </v-stepper-items>
                 </v-stepper>
@@ -313,7 +384,6 @@
     export default {
         data() {
             return {
-                completed: false,
                 modelAutoBrand: null,
                 modelAutoModel: null,
                 modelDrivingExp: null,
@@ -322,7 +392,6 @@
                 modelDriversCount: null,
                 modelFranchise: null,
                 modelInsurance: null,
-                autoBrandImage: null,
                 step: 0,
                 brands: brands,
                 models: models,
@@ -334,43 +403,43 @@
             }
         },
         watch: {
-            modelAutoBrand(val) {
-                console.log("brand", val);
-                if (val != null) {
-                    db.collection("autos").where("brand", "==", val).get().then
-                    (querySnapshot => {
-                        if (querySnapshot.docs.length > 0) {
-                            console.log("models", querySnapshot.docs[0].data().models);
-                            models.splice(0, models.length);
-                            models.push(
-                                ...querySnapshot.docs[0].data().models.map(
-                                    (value, index) => {
-                                        sg.ref("models").child(val.toLowerCase() + '_' + value.toLowerCase() + '.png')
-                                            .getDownloadURL().then(
-                                            src => Vue.set(models, index, {
-                                                text: models[index].text,
-                                                image: src,
-                                            })
-                                        );
-                                        return {
-                                            text: value,
-                                            image: "",
-                                        }
+            modelAutoBrand(newBrand) {
+                console.log("brand", newBrand);
+                db.collection("autos").where("brand", "==", newBrand.text).get().then
+                (querySnapshot => {
+                    if (querySnapshot.docs.length > 0) {
+                        models.splice(0, models.length);
+                        models.push(
+                            ...querySnapshot.docs[0].data().models.map(
+                                (model, index) => {
+                                    const imageFilename =
+                                        newBrand.text.toLowerCase()
+                                        + '_'
+                                        + model.split(' ').join('_').toLowerCase()
+                                        + '.png';
+                                    sg.ref("models").child(imageFilename).getDownloadURL().then(
+                                        src => Vue.set(models, index, {
+                                            text: models[index].text,
+                                            image: src,
+                                        })
+                                    );
+                                    return {
+                                        text: model,
+                                        image: "",
                                     }
-                                )
-                            );
-                        }
-                    })
-                }
+                                }
+                            )
+                        );
+                    }
+                });
             },
         },
         computed: {
-            showAutoModel() {
-                return this.modelAutoBrand != null;
-            },
             firstStepCompleted() {
                 return this.modelAutoBrand != null
+                    && this.modelAutoBrand.image != null
                     && this.modelAutoModel != null
+                    && this.modelAutoModel.image != null
                     && this.modelMileage != null;
             },
             secondStepCompleted() {
