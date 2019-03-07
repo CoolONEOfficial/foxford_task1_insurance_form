@@ -26,9 +26,18 @@
                         <v-stepper-step
                                 @click="step = 3"
                                 step="3"
-                                :complete="completed">
+                                :complete="step > 3">
                             Параметры страховки
                         </v-stepper-step>
+                        <!---->
+                        <!--<v-divider></v-divider>-->
+
+                        <!--<v-stepper-step-->
+                                <!--@click="step = 4"-->
+                                <!--step="4"-->
+                                <!--:complete="completed">-->
+                            <!--Подтверждение заказа-->
+                        <!--</v-stepper-step>-->
                     </v-stepper-header>
 
                     <v-stepper-items>
@@ -46,8 +55,12 @@
                                     >
                                         <template slot="selection" slot-scope="data">
 
-                                            <v-img class="ma-1" contain max-height="24px" max-width="40px"
-                                                   :src="data.item.image"></v-img>
+                                            <v-img class="ma-1" 
+                                                   contain
+                                                   max-height="24px"
+                                                   max-width="40px"
+                                                   :src="data.item.image">
+                                            </v-img>
 
                                             <div> {{ data.item.text }}
                                             </div>
@@ -78,7 +91,8 @@
                                     >
                                         <template slot="selection" slot-scope="data">
 
-                                            <v-img class="ma-1" contain
+                                            <v-img class="ma-1" 
+                                                   contain
                                                    max-height="24px"
                                                    max-width="40px"
                                                    :src="data.item.image">
@@ -90,7 +104,9 @@
                                         </template>
                                         <template slot="item" slot-scope="data">
                                             <v-list-tile-avatar tile>
-                                                <v-img class="ma-1" contain max-height="24px"
+                                                <v-img class="ma-1"
+                                                       contain
+                                                       max-height="24px"
                                                        max-width="40px"
                                                        :src="data.item.image">
                                                 </v-img>
@@ -137,7 +153,7 @@
                         <v-stepper-step :complete="step > 2 || completed" step="2" class="hidden-md-and-up">Владелец
                         </v-stepper-step>
 
-                        <v-stepper-content step="2" pa-3>
+                        <v-stepper-content step="2">
                             <v-subheader>
                                 Количество водителей
                             </v-subheader>
@@ -211,7 +227,7 @@
                         <v-stepper-step step="3" :complete="completed" class="hidden-md-and-up">Параметры страховки
                         </v-stepper-step>
 
-                        <v-stepper-content step="3" pa-3>
+                        <v-stepper-content step="3">
                             <v-subheader>
                                 Франшиза
                             </v-subheader>
@@ -331,11 +347,11 @@
                                     (value, index) => {
                                         sg.ref("models").child(val.toLowerCase() + '_' + value.toLowerCase() + '.png')
                                             .getDownloadURL().then(
-                                                src => Vue.set(models, index, {
-                                                    text: models[index].text,
-                                                    image: src,
-                                                })
-                                            );
+                                            src => Vue.set(models, index, {
+                                                text: models[index].text,
+                                                image: src,
+                                            })
+                                        );
                                         return {
                                             text: value,
                                             image: "",
