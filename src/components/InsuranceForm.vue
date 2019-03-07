@@ -37,16 +37,12 @@
 
                         <v-stepper-content step="1">
                             <v-layout row wrap justify-space-between>
-                                <v-flex xs1 md1 grow pa-1>
-                                    <v-img :src="autoBrandImage != null ? autoBrandImage : ''"></v-img>
-                                </v-flex>
-                                <v-flex xs11 md5 grow pa-1>
+                                <v-flex xs12 md6 pa-1>
                                     <v-autocomplete
                                             v-model="modelAutoBrand"
                                             :items="brands"
                                             label="Производитель"
                                             persistent-hint
-                                            return-object
                                     >
                                         <template slot="selection" slot-scope="data">
 
@@ -298,6 +294,7 @@
                     db.collection("autos").where("brand", "==", val).get().then
                     (querySnapshot => {
                         if (querySnapshot.docs.length > 0) {
+                            console.log("models", querySnapshot.docs[0].data().models);
                             models.splice(0, models.length);
                             models.push(
                                 ...querySnapshot.docs[0].data().models
