@@ -129,9 +129,7 @@
                                         "
                                     inverse-label
                                     v-model="modelMileage"
-                                    :tick-labels="Array(
-                                            '<0.5', '0.5', '1', '2', '3', '4', '>5'
-                                        )"
+                                    :tick-labels="labelsMileage"
                                     :max="6"
                                     step="1"
                                     ticks="always"
@@ -160,7 +158,7 @@
                             </v-subheader>
                             <v-slider
                                     v-model="modelDriversCount"
-                                    :tick-labels="Array('1', '2', '3', '4', '>5')"
+                                    :tick-labels="labelsDriversCount"
                                     :max="4"
                                     step="1"
                                     ticks="always"
@@ -175,14 +173,14 @@
                             </v-subheader>
                             <v-slider
                                     :label="
-                                            modelDrivingExp == null ? '' :
-                                            modelDrivingExp === 6 ? 'лет'
-                                                : modelDrivingExp === 2 ? 'год'
+                                            modelDriversExp == null ? '' :
+                                            modelDriversExp === 6 ? 'лет'
+                                                : modelDriversExp === 2 ? 'год'
                                                 : 'года'
                                         "
                                     inverse-label
-                                    v-model="modelDrivingExp"
-                                    :tick-labels="Array('<0.5', '0.5', '1', '2', '3', '4', '>5')"
+                                    v-model="modelDriversExp"
+                                    :tick-labels="labelsDriversExp"
                                     :max="6"
                                     step="1"
                                     ticks="always"
@@ -197,14 +195,14 @@
                             </v-subheader>
                             <v-slider
                                     :label="
-                                            modelAge == null ? '' :
-                                            modelAge === 0
+                                            modelDriversAge == null ? '' :
+                                            modelDriversAge === 0
                                                 ? 'года'
                                                 : 'лет'
                                         "
                                     inverse-label
-                                    v-model="modelAge"
-                                    :tick-labels="Array('18-22', '23-30', '31-40', '41-50', '50+')"
+                                    v-model="modelDriversAge"
+                                    :tick-labels="labelsDriversAge"
                                     :max="4"
                                     step="1"
                                     ticks="always"
@@ -241,18 +239,18 @@
                                     label="т. р."
                                     inverse-label
                                     v-model="modelFranchise"
-                                    :tick-labels="Array('5', '10', '20', '30', '40', '50')"
+                                    :tick-labels="labelsFranchise"
                                     :max="5"
                                     step="1"
                                     ticks="always"
                                     tick-size="2"
                             ></v-slider>
                             <v-select
-                                    :items="Array(
+                                    :items="[
                                             'по направлению страховщика',
                                             'официальный дилер',
                                             'не важно'
-                                        )"
+                                        ]"
                                     label="Направление на ремонт"
                                     @change="modelInsuranceChange"
                             ></v-select>
@@ -280,57 +278,93 @@
                                             <h3 class="headline mb-0">Автомобиль</h3>
                                         </v-card-title>
 
-                                        <v-layout row wrap align-center>
-                                            <v-flex xs5 md12 pa-1 class="justify-end">
-                                                <v-layout
-                                                          justify-center
-                                                          wrap
-                                                          align-center
-                                                          :column="$vuetify.breakpoint.smAndDown">
+                                        <v-layout column align-center pb-3>
 
-                                                    <h3 class="headline mb-0">
-                                                        {{ modelAutoBrand != null ? modelAutoBrand.text : '' }}
-                                                    </h3>
+                                            <h3 class="subheading mb-0">
+                                                Производитель:
+                                                <b>{{ modelAutoBrand != null ? modelAutoBrand.text : '' }}</b>
+                                            </h3>
 
-                                                    <v-img
-                                                            v-if="$vuetify.breakpoint.mdAndUp"
-                                                            contain
-                                                            max-height="24px"
-                                                            max-width="40px"
-                                                            aspect-ratio="1"
-                                                            :src="modelAutoBrand != null ? modelAutoBrand.image : ''"
-                                                            class="mx-2"
-                                                    >
-                                                    </v-img>
+                                            <h3 class="subheading mb-0">
+                                                Модель:
+                                                <b>{{ modelAutoModel != null ? modelAutoModel.text : '' }}</b>
+                                            </h3>
 
-                                                    <h3 class="headline mb-0">
-                                                        {{ modelAutoModel != null ? modelAutoModel.text : '' }}
-                                                    </h3>
-                                                </v-layout>
-                                            </v-flex>
-                                            <v-flex xs7 md12 pa-3>
-                                                <v-img contain
-                                                       max-height="150"
-                                                       aspect-ratio="1"
-                                                       :src="modelAutoModel != null ? modelAutoModel.image : ''"
-                                                >
-                                                </v-img>
-                                            </v-flex>
+                                            <img class="pa-2"
+                                                 alt=""
+                                                 :src="modelAutoModel != null ? modelAutoModel.image : ''"
+                                                 width="150px"
+                                            >
+
+                                            <h3 class="subheading mb-0">
+                                                Пробег:
+                                                <b>
+                                                    {{
+                                                    labelsMileage[modelMileage] + ' ' + (modelMileage == null ? '' :
+                                                    modelMileage === 6 ? 'лет'
+                                                    : modelMileage === 2 ? 'год'
+                                                    : 'года')
+                                                    }}
+                                                </b>
+                                            </h3>
                                         </v-layout>
                                     </v-card>
                                 </v-flex>
                                 <v-flex xs12 md4 pa-1>
-                                    <v-card>
-                                        <v-card-title class="justify-center text-xs-center" primary-title>
+                                    <v-card class="text-xs-center">
+                                        <v-card-title class="justify-center" primary-title>
                                             <h3 class="headline mb-0">Владелец</h3>
                                         </v-card-title>
+                                        <v-layout column pb-3>
+                                            <h3 class="subheading mb-0">
+                                                Количество водителей: <b>{{ labelsDriversCount[modelDriversCount] }}</b>
+                                            </h3>
+                                            <h3 class="subheading mb-0">
+                                                {{
+                                                modelDriversCount > 0
+                                                ? 'Мин. стаж водителей'
+                                                : 'Стаж водителя'
+                                                }}:
+                                                <b>
+                                                    {{labelsDriversExp[modelDriversExp]
+                                                    + ' ' + (modelDriversExp == null ? '' :
+                                                    modelDriversExp === 6 ? 'лет'
+                                                    : modelDriversExp === 2 ? 'год'
+                                                    : 'года')
+                                                    }}
+                                                </b>
+                                            </h3>
+                                            <h3 class="subheading mb-0">
+                                                {{
+                                                modelDriversCount > 0
+                                                ? 'Мин. возраст водителей'
+                                                : 'Возраст водителя'
+                                                }}:
+                                                <b>{{
+                                                    labelsDriversAge[modelDriversAge]
+                                                    + ' ' + (modelDriversAge == null ? '' :
+                                                    modelDriversAge === 0
+                                                    ? 'года'
+                                                    : 'лет')
+                                                    }}
+                                                </b>
+                                            </h3>
+                                        </v-layout>
                                     </v-card>
                                 </v-flex>
                                 <v-flex xs12 md4 pa-1>
-                                    <v-card>
+                                    <v-card class="text-xs-center">
                                         <v-card-title class="justify-center text-xs-center" primary-title>
                                             <h3 class="headline mb-0">Параметры страховки</h3>
                                         </v-card-title>
+                                        <v-layout column pb-3>
+                                            <h3 class="subheading mb-0">
+                                                Франшиза: <b>{{ labelsFranchise[modelFranchise] }} т.р.</b>
+                                            </h3>
+                                            <h3 class="subheading mb-0">
+                                                Направление на ремонт: <b>{{ modelInsurance }}</b>
+                                            </h3>
+                                        </v-layout>
                                     </v-card>
                                 </v-flex>
                             </v-layout>
@@ -386,12 +420,17 @@
             return {
                 modelAutoBrand: null,
                 modelAutoModel: null,
-                modelDrivingExp: null,
-                modelAge: null,
                 modelMileage: null,
                 modelDriversCount: null,
+                modelDriversExp: null,
+                modelDriversAge: null,
                 modelFranchise: null,
                 modelInsurance: null,
+                labelsMileage: ['<0.5', '0.5', '1', '2', '3', '4', '>5'],
+                labelsDriversCount: ['1', '2', '3', '4', '>5'],
+                labelsDriversExp: ['<0.5', '0.5', '1', '2', '3', '4', '>5'],
+                labelsDriversAge: ['18-22', '23-30', '31-40', '41-50', '50+'],
+                labelsFranchise: ['5', '10', '20', '30', '40', '50'],
                 step: 0,
                 brands: brands,
                 models: models,
@@ -443,9 +482,9 @@
                     && this.modelMileage != null;
             },
             secondStepCompleted() {
-                return this.modelDrivingExp != null
+                return this.modelDriversExp != null
                     && this.modelDriversCount != null
-                    && this.modelAge != null;
+                    && this.modelDriversAge != null;
             },
             thirdStepCompleted() {
                 return this.modelFranchise != null
