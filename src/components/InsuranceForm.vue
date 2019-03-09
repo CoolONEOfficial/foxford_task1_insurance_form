@@ -368,47 +368,54 @@
                                     </v-card>
                                 </v-flex>
                             </v-layout>
-                            <h4 class="display-1 font-weight-light text-xs-center mt-5 mb-3">Как с Вами связаться?</h4>
-                            <v-tabs fixed-tabs>
+                            <h4 class="display-1 font-weight-light text-xs-center mt-5 mb-3">Как с Вами
+                                связаться?</h4>
+
+                            <v-tabs fixed-tabs
+                                    v-model="modelFeedbackTab"
+                                    @change="modelFeedback = null">
                                 <v-tab
-                                        v-for="title in ['Эл. почта', 'Телефон', 'Соцсети']"
+                                        v-for="title in [
+                                            'Эл. почта',
+                                            'Телефон',
+                                            'Соцсети'
+                                        ]"
                                         :key="title"
                                         ripple
                                 >
                                     {{ title }}
                                 </v-tab>
-                                <v-tab-item>
-                                    <v-text-field v-model="modelFeedbackMail"
-                                                  placeholder="name@example.com"
-                                                  autocomplete="email"
-                                                  name="email"
-                                                  label="Эл. почта"
-                                                  type="email">
-                                    </v-text-field>
-                                </v-tab-item>
-                                <v-tab-item>
-                                    <v-text-field v-model="modelFeedbackPhone"
-                                                  placeholder="+7 (800) 535-35-35"
-                                                  name="phone"
-                                                  label="Номер телефона"
-                                                  type="tel"
-                                                  autocomplete="tel">
-                                    </v-text-field>
-                                </v-tab-item>
-                                <v-tab-item>
-                                    <v-text-field v-model="modelFeedbackSocial"
-                                                  placeholder="VK, Instagram, ..."
-                                                  label="Ссылка на страничку в соцсети">
-                                    </v-text-field>
-                                </v-tab-item>
                             </v-tabs>
-                            <v-btn
-                                    color="primary"
-                                    @click="sendFeedback"
-                                    :disabled="!feedbackCompleted"
-                            >
-                                Отправить
-                            </v-btn>
+                            <v-flex xs12 md6 offset-md3>
+                                <v-text-field v-model="modelFeedback"
+                                              :placeholder="[
+                                                    'name@example.com',
+                                                    '+7 (800) 535-35-35',
+                                                    'VK, Instagram...',
+                                                  ][modelFeedbackTab]"
+                                              :name="[
+                                                    'email',
+                                                    'phone',
+                                                    ''
+                                                  ][modelFeedbackTab]"
+                                              :autocomplete="[
+                                                    'email',
+                                                    'tel',
+                                                    ''
+                                                  ][modelFeedbackTab]"
+                                              :type="[
+                                                    'email',
+                                                    'phone',
+                                                    ''
+                                                  ][modelFeedbackTab]">
+                                </v-text-field>
+                                <v-btn
+                                        color="primary"
+                                        :disabled="!feedbackCompleted"
+                                >
+                                    Отправить
+                                </v-btn>
+                            </v-flex>
                         </v-stepper-content>
                     </v-stepper-items>
                 </v-stepper>
@@ -466,9 +473,8 @@
                 modelDriversAge: null,
                 modelFranchise: null,
                 modelInsurance: null,
-                modelFeedbackSocial: null,
-                modelFeedbackPhone: null,
-                modelFeedbackMail: null,
+                modelFeedback: null,
+                modelFeedbackTab: null,
                 labelsMileage: ['<0.5', '0.5', '1', '2', '3', '4', '>5'],
                 labelsDriversCount: ['1', '2', '3', '4', '>5'],
                 labelsDriversExp: ['<0.5', '0.5', '1', '2', '3', '4', '>5'],
@@ -478,11 +484,6 @@
                 brands: brands,
                 models: models,
             }
-        },
-        methods: {
-            sendFeedback() {
-
-            },
         },
         watch: {
             modelAutoBrand(newBrand) {
@@ -518,9 +519,7 @@
         },
         computed: {
             feedbackCompleted() {
-                return this.modelFeedbackMail != null
-                    || this.modelFeedbackPhone != null
-                    || this.modelFeedbackSocial != null;
+                return this.modelFeedback != null;
             },
             firstStepCompleted() {
                 return this.modelAutoBrand != null
