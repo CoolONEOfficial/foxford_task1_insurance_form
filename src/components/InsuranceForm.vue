@@ -3,7 +3,7 @@
         <v-container
                 align-center justify-center fill-height>
             <v-flex xs12 md8 lg6>
-                <v-stepper v-model="step" :vertical="$vuetify.breakpoint.smAndDown">
+                <v-stepper id="stepper" v-model="step" :vertical="$vuetify.breakpoint.smAndDown">
                     <v-stepper-header class="hidden-sm-and-down">
                         <v-stepper-step
                                 @click="step = 1"
@@ -252,7 +252,7 @@
                                             'не важно'
                                         ]"
                                     label="Направление на ремонт"
-                                    @change="modelInsuranceChange"
+                                    v-model="modelInsurance"
                             ></v-select>
 
                             <v-btn
@@ -368,7 +368,47 @@
                                     </v-card>
                                 </v-flex>
                             </v-layout>
-                            <h3 class="display-2 font-weight-light text-xs-center mt-3">Как с Вами связаться?</h3>
+                            <h4 class="display-1 font-weight-light text-xs-center mt-5 mb-3">Как с Вами связаться?</h4>
+                            <v-tabs fixed-tabs>
+                                <v-tab
+                                        v-for="title in ['Эл. почта', 'Телефон', 'Соцсети']"
+                                        :key="title"
+                                        ripple
+                                >
+                                    {{ title }}
+                                </v-tab>
+                                <v-tab-item>
+                                    <v-text-field v-model="modelFeedbackMail"
+                                                  placeholder="name@example.com"
+                                                  autocomplete="email"
+                                                  name="email"
+                                                  label="Эл. почта"
+                                                  type="email">
+                                    </v-text-field>
+                                </v-tab-item>
+                                <v-tab-item>
+                                    <v-text-field v-model="modelFeedbackPhone"
+                                                  placeholder="+7 (800) 535-35-35"
+                                                  name="phone"
+                                                  label="Номер телефона"
+                                                  type="tel"
+                                                  autocomplete="tel">
+                                    </v-text-field>
+                                </v-tab-item>
+                                <v-tab-item>
+                                    <v-text-field v-model="modelFeedbackSocial"
+                                                  placeholder="VK, Instagram, ..."
+                                                  label="Ссылка на страничку в соцсети">
+                                    </v-text-field>
+                                </v-tab-item>
+                            </v-tabs>
+                            <v-btn
+                                    color="primary"
+                                    @click="sendFeedback"
+                                    :disabled="!feedbackCompleted"
+                            >
+                                Отправить
+                            </v-btn>
                         </v-stepper-content>
                     </v-stepper-items>
                 </v-stepper>
@@ -426,6 +466,9 @@
                 modelDriversAge: null,
                 modelFranchise: null,
                 modelInsurance: null,
+                modelFeedbackSocial: null,
+                modelFeedbackPhone: null,
+                modelFeedbackMail: null,
                 labelsMileage: ['<0.5', '0.5', '1', '2', '3', '4', '>5'],
                 labelsDriversCount: ['1', '2', '3', '4', '>5'],
                 labelsDriversExp: ['<0.5', '0.5', '1', '2', '3', '4', '>5'],
@@ -437,9 +480,9 @@
             }
         },
         methods: {
-            modelInsuranceChange: function (val) {
-                this.modelInsurance = val;
-            }
+            sendFeedback() {
+
+            },
         },
         watch: {
             modelAutoBrand(newBrand) {
@@ -474,6 +517,11 @@
             },
         },
         computed: {
+            feedbackCompleted() {
+                return this.modelFeedbackMail != null
+                    || this.modelFeedbackPhone != null
+                    || this.modelFeedbackSocial != null;
+            },
             firstStepCompleted() {
                 return this.modelAutoBrand != null
                     && this.modelAutoBrand.image != null
